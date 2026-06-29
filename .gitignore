@@ -1,0 +1,16 @@
+## Core dotnet Artifacts
+**/bin/
+**/obj/
+
+## Rider & JetBrains Tools
+.idea/
+*.sln.DotSettings.user
+
+## OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
