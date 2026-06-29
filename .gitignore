@@ -1,16 +1,14 @@
-## Core dotnet Artifacts
-**/bin/
-**/obj/
+## .NET Artifacts (Derleme Dosyaları)
+bin/
+obj/
 
-## Rider & JetBrains Tools
+## JetBrains Rider & Visual Studio Settings
 .idea/
 *.sln.DotSettings.user
+*.suo
+*.user
 
-## OS generated files
+## macOS Specific (Mac kullandığın için DS_Store kesinlikle kalmalı)
 .DS_Store
 .DS_Store?
 ._*
-.Spotlight-V100
-.Trashes
-ehthumbs.db
-Thumbs.db
