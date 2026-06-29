@@ -1,0 +1,11 @@
+/Users/erenkurt/Desktop/ErenStore/Entities/bin/Debug/net10.0/Entities.deps.json
+/Users/erenkurt/Desktop/ErenStore/Entities/bin/Debug/net10.0/Entities.dll
+/Users/erenkurt/Desktop/ErenStore/Entities/bin/Debug/net10.0/Entities.pdb
+/Users/erenkurt/Desktop/ErenStore/Entities/obj/Debug/net10.0/Entities.GeneratedMSBuildEditorConfig.editorconfig
+/Users/erenkurt/Desktop/ErenStore/Entities/obj/Debug/net10.0/Entities.AssemblyInfoInputs.cache
+/Users/erenkurt/Desktop/ErenStore/Entities/obj/Debug/net10.0/Entities.AssemblyInfo.cs
+/Users/erenkurt/Desktop/ErenStore/Entities/obj/Debug/net10.0/Entities.csproj.CoreCompileInputs.cache
+/Users/erenkurt/Desktop/ErenStore/Entities/obj/Debug/net10.0/Entities.dll
+/Users/erenkurt/Desktop/ErenStore/Entities/obj/Debug/net10.0/refint/Entities.dll
+/Users/erenkurt/Desktop/ErenStore/Entities/obj/Debug/net10.0/Entities.pdb
+/Users/erenkurt/Desktop/ErenStore/Entities/obj/Debug/net10.0/ref/Entities.dll

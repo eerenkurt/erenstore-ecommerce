@@ -1,0 +1,17 @@
+/Users/erenkurt/Desktop/ErenStore/Infrastructure/bin/Debug/net10.0/Infrastructure.deps.json
+/Users/erenkurt/Desktop/ErenStore/Infrastructure/bin/Debug/net10.0/Infrastructure.dll
+/Users/erenkurt/Desktop/ErenStore/Infrastructure/bin/Debug/net10.0/Infrastructure.pdb
+/Users/erenkurt/Desktop/ErenStore/Infrastructure/bin/Debug/net10.0/Entities.dll
+/Users/erenkurt/Desktop/ErenStore/Infrastructure/bin/Debug/net10.0/Entities.pdb
+/Users/erenkurt/Desktop/ErenStore/Infrastructure/obj/Debug/net10.0/Infrastructure.csproj.AssemblyReference.cache
+/Users/erenkurt/Desktop/ErenStore/Infrastructure/obj/Debug/net10.0/Infrastructure.GeneratedMSBuildEditorConfig.editorconfig
+/Users/erenkurt/Desktop/ErenStore/Infrastructure/obj/Debug/net10.0/Infrastructure.AssemblyInfoInputs.cache
+/Users/erenkurt/Desktop/ErenStore/Infrastructure/obj/Debug/net10.0/Infrastructure.AssemblyInfo.cs
+/Users/erenkurt/Desktop/ErenStore/Infrastructure/obj/Debug/net10.0/Infrastructure.csproj.CoreCompileInputs.cache
+/Users/erenkurt/Desktop/ErenStore/Infrastructure/obj/Debug/net10.0/Infrastr.15EFFBFE.Up2Date
+/Users/erenkurt/Desktop/ErenStore/Infrastructure/obj/Debug/net10.0/Infrastructure.dll
+/Users/erenkurt/Desktop/ErenStore/Infrastructure/obj/Debug/net10.0/refint/Infrastructure.dll
+/Users/erenkurt/Desktop/ErenStore/Infrastructure/obj/Debug/net10.0/Infrastructure.pdb
+/Users/erenkurt/Desktop/ErenStore/Infrastructure/obj/Debug/net10.0/ref/Infrastructure.dll
+/Users/erenkurt/Desktop/ErenStore/Infrastructure/bin/Debug/net10.0/Application.dll
+/Users/erenkurt/Desktop/ErenStore/Infrastructure/bin/Debug/net10.0/Application.pdb

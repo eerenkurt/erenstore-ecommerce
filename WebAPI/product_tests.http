@@ -1,0 +1,23 @@
+### 1. Giriş Yap ve Güncel Token'ı Al (Önce bunu çalıştırıp token'ı kopyala)
+POST http://localhost:5111/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "dev.erenkurt@gmail.com",
+  "password": "staj_projesi_123"
+}
+
+###
+
+### 2. Token Kullanarak Yeni Ürün Ekle (Giriş Yetkili — [Authorize(Roles="Seller")])
+POST http://localhost:5111/api/products
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1laWQiOiIxIiwiZW1haWwiOiJkZXYuZXJlbmt1cnRAZ21haWwuY29tIiwicm9sZSI6IlNlbGxlciIsIm5iZiI6MTc4MjczMjIzMSwiZXhwIjoxNzgyNzM1ODMxLCJpYXQiOjE3ODI3MzIyMzEsImlzcyI6IkVyZW5TdG9yZSIsImF1ZCI6IkVyZW5TdG9yZVVzZXJzIn0.Z4b6SllgVycc93PaNKSsV77naNCZtkrVOE8i6IP741E
+
+
+{
+  "name": "iPhone 15 Pro",
+  "description": "128 GB Siyah Titanyum, Sıfır Ayarında",
+  "price": 65000.00,
+  "stock": 5
+}

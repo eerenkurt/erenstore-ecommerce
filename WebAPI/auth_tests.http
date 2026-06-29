@@ -1,0 +1,44 @@
+### 1. Yeni Bir Satıcı (Seller) Kayıt İsteği
+POST http://localhost:5111/api/auth/register
+Content-Type: application/json
+
+{
+  "firstName": "Eren",
+  "lastName": "Kurt",
+  "email": "dev.erenkurt@gmail.com",
+  "password": "staj_projesi_123",
+  "userType": 2,
+  "storeName": "Eren Teknoloji"
+}
+
+###
+
+### 2. Giriş Yapma ve Token Alma İsteği
+POST http://localhost:5111/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "dev.erenkurt@gmail.com",
+  "password": "staj_projesi_123"
+}
+
+### Satıcıyı Onayla
+PUT http://localhost:5111/api/admin/approve-seller
+Content-Type: application/json
+
+{
+  "userId": 1,
+  "isApproved": true
+}
+
+###
+
+### satıcı onayını kaldırma
+PUT http://localhost:5111/api/admin/approve-seller
+Content-Type: application/json
+
+{
+  "userId": 1,
+  "isApproved": false
+}
+
