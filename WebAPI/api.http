@@ -1,0 +1,12 @@
+### 1. Adım: Yepyeni Bir Token Alalım
+POST http://localhost:5111/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "benadmin@gmail.com",
+  "password": "admin123"
+}
+
+### 2. Adım: Yeni Token İle İstek Atalım
+GET http://localhost:5111/api/Admin/pending-sellers
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1laWQiOiIzIiwiZW1haWwiOiJiZW5hZG1pbkBnbWFpbC5jb20iLCJyb2xlIjoiQWRtaW4iLCJuYmYiOjE3ODI4MjA5MzMsImV4cCI6MTc4MjgyNDUzMywiaWF0IjoxNzgyODIwOTMzLCJpc3MiOiJFcmVuU3RvcmUiLCJhdWQiOiJFcmVuU3RvcmVVc2VycyJ9.aGkzGZD7EmNmPoAxxevGL5sL9JuWX0bj9wFDqKnIfx4

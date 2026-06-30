@@ -1,16 +1,20 @@
 using Application.DTOs;
 using Application.Interfaces;
+using Entities.Enums;
 using Entities.Models;
+using AutoMapper;
 
 namespace Application.Services;
 
 public class AuthManager : IAuthService
 {
     private readonly IRepository<User> _userRepository;
+    private readonly IMapper _mapper;
 
-    public AuthManager(IRepository<User> userRepository)
+    public AuthManager(IRepository<User> userRepository,  IMapper mapper)
     {
         _userRepository = userRepository;
+        _mapper = mapper;
     }
 
     public async Task<bool> RegisterAsync(RegisterDto dto)
@@ -67,5 +71,16 @@ public class AuthManager : IAuthService
     
         return true;
     }
+    public async Task<IEnumerable<SellerApplicationDto>> GetPendingSellersAsync()
+    {
+        // veritabanından koşula uyanları çek tipi 'Seller' olan ve durumu 'Pending' olanlar
+        var pendingSellers = await _userRepository.GetAllAsync(u => 
+            u.UserType == UserTypes.Seller && 
+            u.SellerStatus == SellerStatus.Pending);
+
+        // çektiğin User entity listesini, frontende göndereceğimiz DTO listesine dönüştür
+        return _mapper.Map<IEnumerable<SellerApplicationDto>>(pendingSellers);
+    }
+    
     
 }

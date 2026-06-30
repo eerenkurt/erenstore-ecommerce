@@ -16,6 +16,12 @@ public class AdminController : ControllerBase
     {
         _authService = authService;
     }
+    [HttpGet("pending-sellers")]
+    public async Task<IActionResult> GetPendingSellers()
+    {
+        var result = await _authService.GetPendingSellersAsync();
+        return Ok(result); // 200 HTTP statü kodu ile listeyi dönüyoruz.
+    }
 
     [HttpPut("approve-seller")] 
     public async Task<IActionResult> ApproveSeller([FromBody] UpdateSellerStatusDto dto)
