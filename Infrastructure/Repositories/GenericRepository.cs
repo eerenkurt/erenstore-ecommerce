@@ -17,16 +17,37 @@ public class GenericRepository<T> : IRepository<T> where T : BaseModel
         _dbSet = context.Set<T>();
     }
 
-    public async Task<T?> GetByIdAsync(int id)
-    {
-        return await _dbSet.FirstOrDefaultAsync(x => x.Id == id && !x.IsDeleted);
-    }
-
-    public async Task<IEnumerable<T>> GetAllAsync(Expression<Func<T, bool>>? predicate = null)
+    public async Task<T?> GetByIdAsync(int id, params string[] includes)
     {
         IQueryable<T> query = _dbSet.Where(x => !x.IsDeleted);
+
+        // eğer include edilecek tablolar gönderilmişse bunları sorguya ekle
+        if (includes != null)
+        {
+            foreach (var include in includes)
+            {
+                query = query.Include(include);
+            }
+        }
+
+        return await query.FirstOrDefaultAsync(x => x.Id == id);
+    }
+
+    public async Task<IEnumerable<T>> GetAllAsync(Expression<Func<T, bool>>? predicate = null, params string[] includes)
+    {
+        IQueryable<T> query = _dbSet.Where(x => !x.IsDeleted);
+        
         if (predicate != null)
             query = query.Where(predicate);
+
+        if (includes != null)
+        {
+            foreach (var include in includes)
+            {
+                query = query.Include(include); 
+            }
+        }
+
         return await query.ToListAsync();
     }
 

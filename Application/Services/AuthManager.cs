@@ -23,7 +23,7 @@ public class AuthManager : IAuthService
             FirstName = dto.FirstName,
             LastName = dto.LastName,
             Email = dto.Email,
-            Password = dto.Password, 
+            Password = BCrypt.Net.BCrypt.HashPassword(dto.Password), 
             UserType = (Entities.Enums.UserTypes)dto.UserType,
             StoreName = dto.UserType == 2 ? dto.StoreName : null, 
             SellerStatus = dto.UserType == 2 ? Entities.Enums.SellerStatus.Pending : null 
@@ -37,8 +37,15 @@ public class AuthManager : IAuthService
     // sadece kullanıcıyı kontrol eden metot:
     public async Task<User?> LoginAsync(LoginDto dto)
     {
-        var users = await _userRepository.GetAllAsync(u => u.Email == dto.Email && u.Password == dto.Password);
-        return users.FirstOrDefault(); 
+        var users = await _userRepository.GetAllAsync(u => u.Email == dto.Email);
+        var user = users.FirstOrDefault();
+
+        if (user == null || !BCrypt.Net.BCrypt.Verify(dto.Password, user.Password))
+        {
+            return null;
+        }
+
+        return user; 
     }
     public async Task<bool> UpdateSellerStatusAsync(int userId, bool isApproved)
     {

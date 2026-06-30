@@ -8,7 +8,6 @@ namespace WebAPI.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    [Authorize(Roles = "Customer")]
     public class OrdersController : ControllerBase
     {
         private readonly IOrderService _orderService;
@@ -19,6 +18,7 @@ namespace WebAPI.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Customer")] 
         public async Task<IActionResult> CreateOrder([FromBody] CreateOrderDto dto)
         {
             var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
@@ -43,7 +43,6 @@ namespace WebAPI.Controllers
         [Authorize(Roles = "Customer")] // sadece müşteriler kendi siparişlerini görebilir
         public async Task<IActionResult> GetMyOrders()
         {
-            // token içinden, isteği atan mevcut kullanıcının idsini çekiyoruz
             var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
             if (userIdClaim == null)
             {
@@ -52,7 +51,6 @@ namespace WebAPI.Controllers
 
             int customerId = int.Parse(userIdClaim.Value);
 
-            // servise gidip sadece bu müşterinin siparişlerini getiriyoruz
             var orders = await _orderService.GetOrdersByCustomerIdAsync(customerId);
     
             return Ok(orders);
@@ -64,6 +62,16 @@ namespace WebAPI.Controllers
         {
             var orders = await _orderService.GetAllOrdersAsync();
             return Ok(orders);
+        }
+        
+        [HttpPut("{id}/status")]
+        [Authorize(Roles = "Admin,Seller")] // sipariş durumunu satıcı veya admin güncelleyebilir
+        public async Task<IActionResult> UpdateOrderStatus(int id, [FromBody] UpdateOrderStatusDto updateDto)
+        {
+            // işi servise devrediyoruz hata olursa ExceptionHandlingMiddleware yakalayacak
+            await _orderService.UpdateOrderStatusAsync(id, updateDto);
+
+            return NoContent(); 
         }
     }
 }

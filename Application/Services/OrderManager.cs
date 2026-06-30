@@ -70,17 +70,43 @@ public class OrderManager : IOrderService
 
         return true;
     }
+    // müşterinin kendi siparişlerini listelediği metot
     public async Task<IEnumerable<OrderDto>> GetOrdersByCustomerIdAsync(int customerId)
     {
-        var orders = await _orderRepository.GetAllAsync(o => o.CustomerId == customerId && !o.IsDeleted);
-    
+        // EF Core a OrderItems ve onların içindeki Product ı da getirmesini söylüyoruz.
+        var orders = await _orderRepository.GetAllAsync(
+            o => o.CustomerId == customerId, 
+            "OrderItems.Product"
+        );
+
         return _mapper.Map<IEnumerable<OrderDto>>(orders);
     }
 
+    // adminin sistemdeki tüm siparişleri listelediği metot
     public async Task<IEnumerable<OrderDto>> GetAllOrdersAsync()
     {
-        var orders = await _orderRepository.GetAllAsync(o => !o.IsDeleted);
-    
+        var orders = await _orderRepository.GetAllAsync(
+            null, 
+            "OrderItems.Product" 
+        );
+
         return _mapper.Map<IEnumerable<OrderDto>>(orders);
+    }
+    public async Task UpdateOrderStatusAsync(int orderId, UpdateOrderStatusDto updateDto)
+    {
+        // siparişi bul
+        var order = await _orderRepository.GetByIdAsync(orderId);
+        
+        // sipariş yoksa exception fırlat 
+        if (order == null)
+        {
+            throw new KeyNotFoundException($"ID'si {orderId} olan sipariş bulunamadı.");
+        }
+
+        // durumu güncelle ve kaydet
+        order.Status = updateDto.Status;
+        
+        await _orderRepository.UpdateAsync(order);
+        await _orderRepository.SaveChangesAsync();
     }
 }
