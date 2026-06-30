@@ -23,5 +23,8 @@ public class MappingProfile : Profile
             .ForMember(dest => dest.CompanyName, opt => opt.MapFrom(src => src.StoreName ?? string.Empty))
             .ForMember(dest => dest.Status, opt => opt.MapFrom(src =>
                 src.SellerStatus.HasValue ? src.SellerStatus.Value.ToString() : string.Empty));
+        CreateMap<Order, OrderDto>();
+        CreateMap<OrderItem, OrderItemDto>()
+            .ForMember(dest => dest.ProductName, opt => opt.MapFrom(src => src.Product.Name));
     }
 }

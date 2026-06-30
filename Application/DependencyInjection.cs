@@ -12,6 +12,7 @@ public static class DependencyInjection
         services.AddAutoMapper(cfg => cfg.AddMaps(Assembly.GetExecutingAssembly()));
         services.AddScoped<IProductService, ProductManager>();
         services.AddScoped<IAuthService, AuthManager>();
+        services.AddScoped<IOrderService, OrderManager>();
         return services;
     }
 }

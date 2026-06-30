@@ -1,6 +1,8 @@
 using Application.DTOs;
 using Application.Interfaces;
+using Entities.Enums;
 using Entities.Models;
+using AutoMapper;
 
 namespace Application.Services;
 
@@ -8,11 +10,13 @@ public class OrderManager : IOrderService
 {
     private readonly IRepository<Order> _orderRepository;
     private readonly IProductRepository _productRepository;
+    private readonly IMapper _mapper;
 
-    public OrderManager(IRepository<Order> orderRepository, IProductRepository productRepository)
+    public OrderManager(IRepository<Order> orderRepository, IProductRepository productRepository,  IMapper mapper )
     {
         _orderRepository = orderRepository;
         _productRepository = productRepository;
+        _mapper = mapper;
     }
 
     public async Task<bool> CreateOrderAsync(int customerId, CreateOrderDto dto)
@@ -24,7 +28,7 @@ public class OrderManager : IOrderService
         var order = new Order
         {
             CustomerId = customerId,
-            Status = "Processing",
+            Status = OrderStatus.New,
             CreatedDate = DateTime.UtcNow
         };
 
@@ -65,5 +69,18 @@ public class OrderManager : IOrderService
         await _orderRepository.SaveChangesAsync();
 
         return true;
+    }
+    public async Task<IEnumerable<OrderDto>> GetOrdersByCustomerIdAsync(int customerId)
+    {
+        var orders = await _orderRepository.GetAllAsync(o => o.CustomerId == customerId && !o.IsDeleted);
+    
+        return _mapper.Map<IEnumerable<OrderDto>>(orders);
+    }
+
+    public async Task<IEnumerable<OrderDto>> GetAllOrdersAsync()
+    {
+        var orders = await _orderRepository.GetAllAsync(o => !o.IsDeleted);
+    
+        return _mapper.Map<IEnumerable<OrderDto>>(orders);
     }
 }
