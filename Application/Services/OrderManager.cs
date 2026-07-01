@@ -1,3 +1,4 @@
+// Application/Services/OrderManager.cs
 using Application.DTOs;
 using Application.Interfaces;
 using Entities.Enums;
@@ -9,22 +10,29 @@ namespace Application.Services;
 public class OrderManager : IOrderService
 {
     private readonly IRepository<Order> _orderRepository;
+    private readonly IRepository<CartItem> _cartItemRepository;
     private readonly IProductRepository _productRepository;
     private readonly IMapper _mapper;
 
-    public OrderManager(IRepository<Order> orderRepository, IProductRepository productRepository,  IMapper mapper )
+    public OrderManager(IRepository<Order> orderRepository, IRepository<CartItem> cartItemRepository, IProductRepository productRepository, IMapper mapper)
     {
         _orderRepository = orderRepository;
+        _cartItemRepository = cartItemRepository;
         _productRepository = productRepository;
         _mapper = mapper;
     }
 
-    public async Task<bool> CreateOrderAsync(int customerId, CreateOrderDto dto)
+    public async Task<bool> CreateOrderAsync(int customerId)
     {
-        if (dto.Items == null || !dto.Items.Any())
+        // müşterinin sepetindeki tüm satırları, ürün bilgisiyle birlikte çekiyoruz
+        var cartItems = await _cartItemRepository.GetAllAsync(
+            ci => ci.CustomerId == customerId,
+            "Product"
+        );
+
+        if (cartItems == null || !cartItems.Any())
             throw new InvalidOperationException("Sipariş vermek için sepetinizde en az bir ürün olmalıdır.");
 
-        // ana sipariş nesnesini oluşturuyoruz
         var order = new Order
         {
             CustomerId = customerId,
@@ -34,48 +42,51 @@ public class OrderManager : IOrderService
 
         decimal totalAmount = 0;
 
-        // müşterinin gönderdiği ürünleri tek tek dönüyoruz
-        foreach (var item in dto.Items)
+        // sepetteki her satırı sipariş kalemine çeviriyoruz
+        foreach (var cartItem in cartItems)
         {
-            var product = await _productRepository.GetByIdAsync(item.ProductId);
-            if (product == null)
-                throw new KeyNotFoundException($"Id'si {item.ProductId} olan ürün bulunamadı.");
+            var product = cartItem.Product;
 
-            // stok Kontrolü
-            if (product.Stock < item.Quantity)
+            // stok kontrolü
+            if (product.Stock < cartItem.Quantity)
                 throw new InvalidOperationException($"'{product.Name}' ürünü için yetersiz stok! Kalan stok: {product.Stock}");
 
             // stoğu düşüyoruz
-            product.Stock -= item.Quantity;
+            product.Stock -= cartItem.Quantity;
             await _productRepository.UpdateAsync(product);
 
-            // sipariş kalemini (OrderItem) hazırlıyoruz
             var orderItem = new OrderItem
             {
                 ProductId = product.Id,
-                Quantity = item.Quantity,
+                Quantity = cartItem.Quantity,
                 Price = product.Price, // sipariş anındaki fiyatı kilitliyoruz
                 CreatedDate = DateTime.UtcNow
             };
 
             order.OrderItems.Add(orderItem);
-            totalAmount += (product.Price * item.Quantity);
+            totalAmount += product.Price * cartItem.Quantity;
         }
 
         order.TotalAmount = totalAmount;
 
-        // veritabanına tek seferde kaydediyoruz
         await _orderRepository.AddAsync(order);
         await _orderRepository.SaveChangesAsync();
 
+        // sipariş başarıyla oluştu, artık sepeti temizliyoruz
+        foreach (var cartItem in cartItems)
+        {
+            await _cartItemRepository.DeleteAsync(cartItem);
+        }
+        await _cartItemRepository.SaveChangesAsync();
+
         return true;
     }
+
     // müşterinin kendi siparişlerini listelediği metot
     public async Task<IEnumerable<OrderDto>> GetOrdersByCustomerIdAsync(int customerId)
     {
-        // EF Core a OrderItems ve onların içindeki Product ı da getirmesini söylüyoruz.
         var orders = await _orderRepository.GetAllAsync(
-            o => o.CustomerId == customerId, 
+            o => o.CustomerId == customerId,
             "OrderItems.Product"
         );
 
@@ -86,26 +97,24 @@ public class OrderManager : IOrderService
     public async Task<IEnumerable<OrderDto>> GetAllOrdersAsync()
     {
         var orders = await _orderRepository.GetAllAsync(
-            null, 
-            "OrderItems.Product" 
+            null,
+            "OrderItems.Product"
         );
 
         return _mapper.Map<IEnumerable<OrderDto>>(orders);
     }
+
     public async Task UpdateOrderStatusAsync(int orderId, UpdateOrderStatusDto updateDto)
     {
-        // siparişi bul
         var order = await _orderRepository.GetByIdAsync(orderId);
-        
-        // sipariş yoksa exception fırlat 
+
         if (order == null)
         {
             throw new KeyNotFoundException($"ID'si {orderId} olan sipariş bulunamadı.");
         }
 
-        // durumu güncelle ve kaydet
         order.Status = updateDto.Status;
-        
+
         await _orderRepository.UpdateAsync(order);
         await _orderRepository.SaveChangesAsync();
     }

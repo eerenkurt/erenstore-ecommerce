@@ -18,8 +18,8 @@ namespace WebAPI.Controllers
         }
 
         [HttpPost]
-        [Authorize(Roles = "Customer")] 
-        public async Task<IActionResult> CreateOrder([FromBody] CreateOrderDto dto)
+        [Authorize(Roles = "Customer")]
+        public async Task<IActionResult> CreateOrder()
         {
             var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
             if (userIdClaim == null)
@@ -29,7 +29,7 @@ namespace WebAPI.Controllers
 
             int customerId = int.Parse(userIdClaim.Value);
 
-            var result = await _orderService.CreateOrderAsync(customerId, dto);
+            var result = await _orderService.CreateOrderAsync(customerId);
 
             if (!result)
             {

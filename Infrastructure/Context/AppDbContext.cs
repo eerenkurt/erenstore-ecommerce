@@ -14,6 +14,7 @@ public class AppDbContext : DbContext
     public DbSet<OrderItem> OrderItems { get; set; }
     public DbSet<User> Users { get; set; }
     public DbSet<Product> Products { get; set; }
+    public DbSet<CartItem> CartItems { get; set; }   
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -50,6 +51,27 @@ public class AppDbContext : DbContext
                 .WithMany()
                 .HasForeignKey(oi => oi.ProductId)
                 .OnDelete(DeleteBehavior.Restrict);
+        });
+        
+        modelBuilder.Entity<CartItem>(entity =>
+        {
+            // müşteri silinirse sepeti de silinsin (Cascade)
+            entity.HasOne(ci => ci.Customer)
+                .WithMany()
+                .HasForeignKey(ci => ci.CustomerId)
+                .OnDelete(DeleteBehavior.Cascade);
+            
+            // ürün silinirse sepetteki kayıt da silinsin (Cascade)
+            entity.HasOne(ci => ci.Product)
+                .WithMany()
+                .HasForeignKey(ci => ci.ProductId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            // aynı müşteri + aynı ürün için ikinci satır açılamasın (quantity artırma)
+            // soft-delete ile çakışmaması için sadece IsDeleted=false satırlara unique kısıtı uyguluyoruz
+            entity.HasIndex(ci => new { ci.CustomerId, ci.ProductId })
+                .IsUnique()
+                .HasFilter("\"IsDeleted\" = false");
         });
     }
 }

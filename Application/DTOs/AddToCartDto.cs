@@ -1,7 +1,7 @@
 namespace Application.DTOs;
 
-public class CreateOrderItemDto
+public class AddToCartDto
 {
     public int ProductId { get; set; }
-    public int Quantity { get; set; }
+    public int Quantity { get; set; } = 1;
 }
